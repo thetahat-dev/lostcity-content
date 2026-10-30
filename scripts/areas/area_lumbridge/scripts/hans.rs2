@@ -15,7 +15,7 @@ if(map_members = ^true) {
     }
 }
 
-~chatnpc("<p,happy>Welcome to our custom world, traveller! What are you doing here?");
+~chatnpc("<p,neutral>Hello. What are you doing here?");
 def_int $option = ~p_choice3("I'm looking for whoever is in charge of this place.", 1, "I have come to kill everyone in this castle!", 2, "I don't know. I'm lost. Where am I?", 3);
 if ($option = 1) {
     ~chatplayer("<p,neutral>I'm looking for whoever is in charge of this place.");

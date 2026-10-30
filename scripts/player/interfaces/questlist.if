@@ -6,7 +6,7 @@ x=5
 y=20
 width=168
 height=229
-scroll=1025
+scroll=1057
 
 [com_24]
 layer=com_0
@@ -976,6 +976,33 @@ text=Horror from the Deep
 colour=0xFF0000
 overcolour=0xFFFFFF
 option=Horror from the Deep
+
+[corruption_header]
+layer=com_0
+type=text
+x=5
+y=1019
+width=120
+height=14
+font=b12_full
+shadowed=yes
+text=THE CORRUPTION:
+colour=0xF99B15
+
+[songbook]
+layer=com_0
+type=text
+x=10
+y=1035
+buttontype=normal
+width=80
+height=14
+font=p12_full
+shadowed=yes
+text=The Songbook
+colour=0xFF0000
+overcolour=0xFFFFFF
+option=The Songbook
 
 [com_1]
 type=text

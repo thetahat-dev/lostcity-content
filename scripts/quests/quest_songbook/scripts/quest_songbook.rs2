@@ -1,0 +1,135 @@
+[opnpc1,sir_austin_joseph]
+if (%songbook = ^songbook_not_started) {
+    @austin_start;
+} else if (%songbook = ^songbook_complete) {
+    @austin_post_quest;
+} else if (inv_total(inv, songbook) > 0) {
+    @austin_return_book;
+} else {
+    @austin_progress;
+}
+
+[label,austin_start]
+~chatnpc("<p,neutral>Keep your voice down, traveller. This one has only just stopped screaming.");
+switch_int (~p_choice2("What happened to him?", 1, "I'll leave you to it.", 2)) {
+    case 1 : @austin_explain;
+    case 2 : ~chatplayer("<p,neutral>I'll leave you to it.");
+}
+
+[label,austin_explain]
+~chatplayer("<p,quiz>What happened to him?");
+~chatnpc("<p,sad>He dug up an old book of sheet music, and sang from it. Then the ground moved, and he ran.");
+~chatnpc("<p,scared>He dropped the book somewhere in the woods. I can't leave him, and I can't leave that book lying out there.");
+switch_int (~p_choice2("I'll find it for you.", 1, "That's not my problem.", 2)) {
+    case 1 : @austin_accept;
+    case 2 : ~chatplayer("<p,neutral>That's not my problem.");
+}
+
+[label,austin_accept]
+~chatplayer("<p,neutral>I'll find it for you.");
+%songbook = ^songbook_started;
+~send_quest_progress_colour(questlist:songbook, %songbook, ^songbook_complete);
+~chatnpc("<p,neutral>Thank you. Ask him where he was, if you can get any sense out of him.");
+~chatnpc("<p,angry>And whatever you do, don't read it. Bring it straight back to me.");
+
+[label,austin_progress]
+if (inv_total(bank, songbook) > 0) {
+    ~chatnpc("<p,angry>You left it in a bank? Fetch it, and bring it to me before someone gets curious.");
+    return;
+}
+~chatnpc("<p,quiz>Any sign of the book? Ask the traveller where he was, if you haven't. Be gentle with him.");
+
+[label,austin_return_book]
+~chatplayer("<p,neutral>I found the songbook.");
+if (%songbook_hummed = 1) {
+    ~chatnpc("<p,angry>I can see it on your face. You read it, didn't you? I told you not to.");
+    ~chatplayer("<p,sad>I only hummed a little.");
+    ~chatnpc("<p,scared>That's how it started for him.");
+} else {
+    ~chatnpc("<p,happy>And you kept it shut? You've more sense than most.");
+}
+if (inv_freespace(inv) < 1) {
+    ~chatnpc("<p,neutral>I've something for you as well, but your pack is full. Make some room first.");
+    return;
+}
+~chatnpc("<p,neutral>Give it here, quickly. I'll see it's sealed away.");
+~mesbox("You hold the songbook out to Sir Austin. Behind him, the traveller goes rigid.");
+~chatnpc_specific("Terrified traveller", songbook_traveller, "<p,scared>Mrs. K... she knows the tune now.");
+queue(songbook_complete, 0, 0);
+
+[label,austin_post_quest]
+~chatnpc("<p,sad>The book is sealed, but he still whispers that name. I've sent word to Falador. I doubt they'll believe me.");
+
+[queue,songbook_complete]
+%songbook = ^songbook_complete;
+inv_del(inv, songbook, inv_total(inv, songbook));
+inv_add(inv, tainted_dagger, 1);
+inv_add(inv, coins, ^songbook_coin_reward);
+stat_advance(prayer, ^songbook_prayer_xp);
+session_log(^log_adventure, "Quest complete: The Songbook");
+~send_quest_complete(questlist:songbook, tainted_dagger, ^songbook_reward_scale, ^songbook_questpoints, "You have completed\\nThe Songbook!");
+cam_shake(3, 0, 20, 2);
+mes("Far beneath your feet, something hums along.");
+queue(songbook_shake_end, 8, 0);
+
+[queue,songbook_shake_end]
+cam_reset;
+
+[opnpc1,songbook_traveller]
+if (%songbook = ^songbook_complete) {
+    ~chatnpc("<p,scared>She knows the tune. She knows the tune. She knows the tune.");
+    return;
+}
+if (%songbook = ^songbook_not_started) {
+    ~chatnpc("<p,scared>Don't sing. Please. Don't let anyone sing.");
+    return;
+}
+~chatplayer("<p,quiz>Where were you when you lost the book?");
+~chatnpc("<p,scared>The woods... west of here, past the fence. I ran east and I didn't stop.");
+~chatnpc("<p,scared>The goblins came out of the trees. They looked sick, and they were swaying. Swaying in time.");
+if (%songbook = ^songbook_started) {
+    %songbook = ^songbook_spoke_traveller;
+}
+
+[opheld1,songbook]
+if (%songbook = ^songbook_complete) {
+    inv_del(inv, songbook, inv_total(inv, songbook));
+    mes("The book crumbles to dust in your hands.");
+    return;
+}
+~mesbox("The notes creep across the page when you look away. You can almost hear them.");
+if (%songbook_hummed = 1) {
+    ~mesbox("You remember what happened last time, and close the book.");
+    return;
+}
+switch_int (~p_choice2("Hum the first line.", 1, "Close the book.", 2)) {
+    case 1 : @songbook_hum;
+}
+
+[label,songbook_hum]
+%songbook_hummed = 1;
+if_close;
+~music_jingle("dream1");
+cam_shake(3, 0, 20, 2);
+queue(songbook_shake_end, 8, 0);
+mes("The ground shudders, and something answers you.");
+~damage_self(min(^songbook_hum_damage, sub(stat(hitpoints), 1)));
+npc_add(coord, corrupted_goblin, ^songbook_summon_duration);
+npc_say("Hrrrrmmm...");
+npc_setmode(opplayer2);
+
+[ai_queue3,corrupted_goblin]
+gosub(npc_death);
+if (npc_findhero = ^false) {
+    return;
+}
+obj_add(npc_coord, npc_param(death_drop), 1, ^lootdrop_duration);
+if (%songbook = ^songbook_not_started | %songbook = ^songbook_complete) {
+    return;
+}
+if (inv_total(inv, songbook) > 0 | inv_total(bank, songbook) > 0) {
+    return;
+}
+if (random(^songbook_drop_chance) = 0) {
+    obj_add(npc_coord, songbook, 1, ^lootdrop_duration);
+}

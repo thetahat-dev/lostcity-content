@@ -1,0 +1,47 @@
+[songbook]
+name=Songbook
+desc=Old sheet music. The ink won't stay still.
+iop1=Read
+model=inv_book
+recol1s=13472
+recol1d=27038
+2dzoom=840
+2dyan=152
+2dxan=256
+weight=18oz
+tradeable=no
+
+[tainted_dagger]
+model=inv_dagger
+recol1s=15855
+recol1d=12464
+recol2s=9513
+recol2d=8299
+recol3s=19026
+recol3d=12464
+recol4s=26425
+recol4d=17686
+name=Tainted dagger
+desc=The blade feels colder than it should.
+cost=200
+2dyof=-4
+2dzoom=760
+2dyan=1276
+2dxan=472
+iop2=Wield
+wearpos=righthand
+manwear=human_weapons_dagger,0
+womanwear=human_weapons_dagger,6
+category=weapon_stab
+weight=1lb
+param=stabattack,6
+param=slashattack,3
+param=crushattack,-4
+param=magicattack,1
+param=magicdefence,1
+param=strengthbonus,5
+param=stabattack_anim,human_sword_stab
+param=slashattack_anim,human_sword_slash
+param=defend_anim,human_sword_def
+param=stab_sound,stabsword_stab
+param=slash_sound,stabsword_slash

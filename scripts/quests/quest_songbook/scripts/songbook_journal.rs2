@@ -1,0 +1,43 @@
+[if_button,questlist:songbook]
+def_string $x;
+
+if (%songbook = ^songbook_not_started) {
+    $x = append($x, "@dbl@I can start this quest by speaking to @dre@Sir Austin Joseph@dbl@,|");
+    $x = append($x, "@dbl@who is camped in the fields @dre@west of the Lumbridge|");
+    $x = append($x, "@dre@general store@dbl@.");
+    ~quest_journal("The Songbook", $x);
+    return;
+}
+
+$x = append($x, "@str@Sir Austin Joseph is guarding a terrified traveller who|");
+$x = append($x, "@str@lost a book of sheet music in the woods. He warned me|");
+$x = append($x, "@str@not to read it.||");
+
+if (%songbook = ^songbook_complete) {
+    if (%songbook_hummed = 1) {
+        $x = append($x, "@str@I hummed from the book anyway, and wish I hadn't.||");
+    }
+    $x = append($x, "@str@I gave the book to Sir Austin. As I did, the traveller|");
+    $x = append($x, "@str@spoke a name: Mrs. K. Then the ground shook beneath us.||");
+    $x = append($x, "@red@QUEST COMPLETE!");
+    ~quest_journal("The Songbook", $x);
+    return;
+}
+
+if (%songbook >= ^songbook_spoke_traveller) {
+    $x = append($x, "@dbl@The traveller said he ran east out of @dre@the woods@dbl@. The|");
+    $x = append($x, "@dbl@goblins there @dre@looked sick@dbl@, and swayed in time.||");
+} else {
+    $x = append($x, "@dbl@I should ask @dre@the traveller@dbl@ where he was when he lost it.||");
+}
+
+if (%songbook_hummed = 1) {
+    $x = append($x, "@dbl@I hummed from the book. Something answered.||");
+}
+
+if (inv_total(inv, songbook) > 0 | inv_total(bank, songbook) > 0) {
+    $x = append($x, "@dbl@I have found the book. I should take it to @dre@Sir Austin@dbl@.");
+} else {
+    $x = append($x, "@dbl@I need to find @dre@the songbook@dbl@.");
+}
+~quest_journal("The Songbook", $x);

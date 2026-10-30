@@ -1,0 +1,12 @@
+^songbook_not_started = 0
+^songbook_started = 1
+^songbook_spoke_traveller = 2
+^songbook_complete = 3
+
+^songbook_questpoints = 1
+^songbook_drop_chance = 4
+^songbook_coin_reward = 150
+^songbook_prayer_xp = 1000
+^songbook_hum_damage = 1
+^songbook_summon_duration = 300
+^songbook_reward_scale = 200

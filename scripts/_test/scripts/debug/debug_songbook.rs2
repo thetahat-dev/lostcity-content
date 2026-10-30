@@ -1,0 +1,37 @@
+[debugproc,setup_songbook]
+if_close;
+if (p_finduid(uid) = true) {
+    ~player_teleport_normal(0_50_50_1_40);
+} else {
+    @please_finish;
+}
+
+[debugproc,songbook_woods]
+if_close;
+if (p_finduid(uid) = true) {
+    ~player_teleport_normal(0_49_50_40_40);
+} else {
+    @please_finish;
+}
+
+[debugproc,songbook_spawn]
+npc_add(coord, corrupted_goblin, ^songbook_summon_duration);
+npc_setmode(opplayer2);
+
+[debugproc,reset_songbook]
+if_close;
+if (p_finduid(uid) = true) {
+    %songbook = ^songbook_not_started;
+    %songbook_hummed = 0;
+    if (inv_total(inv, songbook) > 0) {
+        inv_del(inv, songbook, inv_total(inv, songbook));
+    }
+    if (inv_total(inv, tainted_dagger) > 0) {
+        inv_del(inv, tainted_dagger, inv_total(inv, tainted_dagger));
+    }
+    ~send_quest_progress_colour(questlist:songbook, %songbook, ^songbook_complete);
+    ~update_questpoints;
+    mes("The Songbook has been reset.");
+} else {
+    @please_finish;
+}
